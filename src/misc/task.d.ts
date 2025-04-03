@@ -1,7 +1,8 @@
 export type Task = {
+    task_id: string;
     text: string;
     category: string;
     completed: boolean;
-    createdAt: string;
-    completedAt?: string;
+    createdAt: Date | string;
+    completedAt?: Date | string;
 }; 
