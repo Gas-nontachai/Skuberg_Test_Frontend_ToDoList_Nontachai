@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Swal from 'sweetalert2';
 import { CircularProgress, Typography, TextField, Button, List, ListItem, IconButton, Checkbox, Box, Select, Menu, MenuItem, Collapse, InputAdornment } from "@mui/material";
 import { Visibility, VisibilityOff, Search, ArrowDownward, ArrowUpward, AssignmentTurnedIn } from "@mui/icons-material";
@@ -40,32 +40,33 @@ const TodoListPage: React.FC = () => {
     ["General", "Work", "Personal"]
   );
 
-  const fetchTasks = async () => {
-    try {
-      const { docs: res } = await getTaskBy();
-      let filtered_tasks = res;
-      if (search_query.trim() !== "") {
-        filtered_tasks = filtered_tasks.filter(task =>
-          task.text.toLowerCase().includes(search_query.toLowerCase())
-        );
-      }
-      if (filter_category !== "All") {
-        filtered_tasks = filtered_tasks.filter(task =>
-          task.category === filter_category
-        );
-      }
-      filtered_tasks.sort((a, b) => {
-        let comparison = 0;
-        if (sort_order.name === "createdAt") {
-          comparison = new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
-        }
-        return sort_order.order === "DESC" ? -comparison : comparison;
-      });
-      setTasks(filtered_tasks);
-    } catch (error) {
-      console.error("Error fetching tasks:", error);
+  const fetchTasks = useCallback(async () => {
+    const { docs: res } = await getTaskBy();
+    let filtered_tasks = res;
+
+    if (search_query.trim() !== "") {
+      filtered_tasks = filtered_tasks.filter(task =>
+        task.text.toLowerCase().includes(search_query.toLowerCase())
+      );
     }
-  };
+
+    if (filter_category !== "All") {
+      filtered_tasks = filtered_tasks.filter(task =>
+        task.category === filter_category
+      );
+    }
+
+    filtered_tasks.sort((a, b) => {
+      let comparison = 0;
+      if (sort_order.name === "createdAt") {
+        comparison = new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+      }
+      return sort_order.order === "DESC" ? -comparison : comparison;
+    });
+
+    setTasks(filtered_tasks);
+
+  }, [filter_category, sort_order]);
 
   useEffect(() => {
     try {
@@ -73,13 +74,9 @@ const TodoListPage: React.FC = () => {
     } catch (error) {
       console.error("Error fetching tasks:", error);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }, [fetchTasks]);
-
-  useEffect(() => {
-    fetchTasks();
-  }, [filter_category, sort_order]);
 
   const addTask = async () => {
     if (!task.text.trim()) {
@@ -205,7 +202,6 @@ const TodoListPage: React.FC = () => {
     fetchTasks();
   };
 
-  const category = task_category_option[0];
   const incompleteTasks = tasks.filter((task) => !task.completed);
   const completedTasks = tasks.filter((task) => task.completed);
 

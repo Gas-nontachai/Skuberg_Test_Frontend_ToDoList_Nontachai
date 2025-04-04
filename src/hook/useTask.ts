@@ -1,20 +1,27 @@
 import { getDBStore } from '@/utils/connect';
 import { Task } from '@/misc/types';
 
-const getTaskBy = async (data: any = {}): Promise<{ docs: Task[], totalDocs: number }> => {
+const getTaskBy = async (filter: Partial<Task> = {}): Promise<{ docs: Task[], totalDocs: number }> => {
     const store = await getDBStore();
     const request = store.getAll();
 
     return new Promise((resolve, reject) => {
         request.onsuccess = () => {
-            const tasks: Task[] = request.result.filter((task: Task) => {
-                return Object.keys(data).every(key => task[key as keyof Task] === data[key]);
-            });
+            if (!request.result) {
+                resolve({ docs: [], totalDocs: 0 });
+                return;
+            }
+
+            const tasks: Task[] = request.result.filter((task: Task) =>
+                Object.entries(filter).every(([key, value]) => task[key as keyof Task] === value)
+            );
+
             resolve({ docs: tasks, totalDocs: tasks.length });
         };
 
         request.onerror = (event) => {
-            reject(new Error(`Error fetching tasks: ${(event.target as IDBRequest).error}`));
+            console.error("IndexedDB Error:", event);
+            reject(new Error(`Error fetching tasks: ${(event.currentTarget as IDBRequest).error}`));
         };
     });
 };
