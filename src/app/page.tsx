@@ -214,10 +214,10 @@ const TodoListPage: React.FC = () => {
           variant="outlined"
           value={task.text}
           onChange={(e) => setTask({ ...task, text: e.target.value })}
-          className="w-96"
+          className="w-80"
           sx={{
             "& .MuiOutlinedInput-root": {
-              borderRadius: "999px", // ทำให้เป็นวงรี
+              borderRadius: "999px",
               paddingRight: "8px",
             },
           }}
@@ -229,7 +229,7 @@ const TodoListPage: React.FC = () => {
                   onChange={(e) => setTask({ ...task, category: e.target.value })}
                   displayEmpty
                   variant="standard"
-                  sx={{ minWidth: "100px", marginRight: "8px" }} // ปรับขนาดและระยะห่าง
+                  sx={{ minWidth: "100px", marginRight: "8px" }}
                 >
                   {task_category_option.map((option) => (
                     <MenuItem key={option} value={option}>
@@ -269,7 +269,7 @@ const TodoListPage: React.FC = () => {
               fetchTasks();
             }
           }}
-          className="w-60"
+          className="w-full"
           size="small"
           sx={{
             "& .MuiOutlinedInput-root": {
