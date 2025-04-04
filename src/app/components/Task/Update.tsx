@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import Swal from 'sweetalert2';
+import Swal from "sweetalert2";
 import {
     Dialog,
     DialogActions,
@@ -15,6 +15,7 @@ import {
 } from "@mui/material";
 import { Task } from "@/misc/types";
 import { useTask } from "@/hook/hooks";
+
 const { getTaskByID, updateTaskBy } = useTask();
 
 interface UpdateTaskProps {
@@ -43,7 +44,7 @@ const UpdateTask: React.FC<UpdateTaskProps> = ({ onClose, open, onRefresh, task_
             const res = await getTaskByID({ task_id });
             setTask(res);
         } catch (error) {
-            console.error("Error fetching tasks:", error);
+            console.error("Error fetching task:", error);
         }
     };
 
@@ -57,6 +58,9 @@ const UpdateTask: React.FC<UpdateTaskProps> = ({ onClose, open, onRefresh, task_
                 position: "top-end",
                 showConfirmButton: false,
                 timer: 2000,
+                background: "#f3f4f6",
+                color: "#111827",
+                iconColor: "#10b981",
             });
             onRefresh();
             onClose();
@@ -65,27 +69,42 @@ const UpdateTask: React.FC<UpdateTaskProps> = ({ onClose, open, onRefresh, task_
             Swal.fire({
                 icon: "error",
                 title: "Failed to update task!",
+                background: "#fef2f2",
+                color: "#7f1d1d",
+                iconColor: "#dc2626",
             });
         }
     };
 
     return (
-        <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
-            <DialogTitle className="font-bold text-lg">Update Task</DialogTitle>
-            <DialogContent className="space-y-4">
+        <Dialog
+            open={open}
+            onClose={onClose}
+            fullWidth
+            maxWidth="sm"
+            sx={{
+                "& .MuiDialog-paper": { borderRadius: "20px", padding: "16px" },
+            }}
+        >
+            <DialogTitle sx={{ fontWeight: "bold", fontSize: "1.25rem" }}>
+                ✏️ Update Task
+            </DialogTitle>
+
+            <DialogContent sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
                 <TextField
                     label="Task Name"
                     fullWidth
                     value={task.text}
                     onChange={(e) => setTask({ ...task, text: e.target.value })}
                     required
+                    sx={{ borderRadius: "10px", marginTop: "8px" }}
                 />
 
                 <Select
-                    label="Category"
                     fullWidth
                     value={task.category}
                     onChange={(e) => setTask({ ...task, category: e.target.value })}
+                    sx={{ borderRadius: "10px" }}
                 >
                     <MenuItem value="General">General</MenuItem>
                     <MenuItem value="Work">Work</MenuItem>
@@ -103,20 +122,23 @@ const UpdateTask: React.FC<UpdateTaskProps> = ({ onClose, open, onRefresh, task_
                                     completedAt: e.target.checked ? new Date() : undefined,
                                 })
                             }
+                            sx={{ color: task.completed ? "#10b981" : "" }}
                         />
                     }
                     label="Mark as Completed"
                 />
             </DialogContent>
 
-            <DialogActions className="px-4 py-2">
-                <Button onClick={onClose} color="error" className="font-bold">Cancel</Button>
-                <Button onClick={handleUpdate} variant="contained" color="primary" className="font-bold">
+            <DialogActions sx={{ paddingX: "16px", paddingBottom: "16px" }}>
+                <Button onClick={onClose} variant="outlined" color="error" sx={{ borderRadius: "10px" }}>
+                    Cancel
+                </Button>
+                <Button onClick={handleUpdate} variant="contained" sx={{ borderRadius: "10px", backgroundColor: "#10b981", "&:hover": { backgroundColor: "#059669" } }}>
                     Save Changes
                 </Button>
             </DialogActions>
         </Dialog>
-    )
-}
+    );
+};
 
-export default UpdateTask
+export default UpdateTask;

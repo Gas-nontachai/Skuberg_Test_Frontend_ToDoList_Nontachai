@@ -1,9 +1,9 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Swal from 'sweetalert2';
-import { CircularProgress, Typography, TextField, Button, List, ListItem, IconButton, Checkbox, Select, Menu, MenuItem, Collapse, InputAdornment } from "@mui/material";
-import { Visibility, VisibilityOff, Search, ArrowDownward, ArrowUpward } from "@mui/icons-material";
-import { Delete, Edit, Sort, Clear } from "@mui/icons-material";
+import { CircularProgress, Typography, TextField, Button, List, ListItem, IconButton, Checkbox, Box, Select, Menu, MenuItem, Collapse, InputAdornment } from "@mui/material";
+import { Visibility, VisibilityOff, Search, ArrowDownward, ArrowUpward, AssignmentTurnedIn } from "@mui/icons-material";
+import { Delete, Edit, Sort, Clear, Add } from "@mui/icons-material";
 import { formatDate } from "@/utils/date-helper"
 import { generateID } from "@/utils/generator-id"
 import { Task } from "@/misc/types";
@@ -218,25 +218,50 @@ const TodoListPage: React.FC = () => {
           variant="outlined"
           value={task.text}
           onChange={(e) => setTask({ ...task, text: e.target.value })}
-          className="w-64"
+          className="w-96"
+          sx={{
+            "& .MuiOutlinedInput-root": {
+              borderRadius: "999px", // ทำให้เป็นวงรี
+              paddingRight: "8px",
+            },
+          }}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <Select
+                  value={task.category || ""}
+                  onChange={(e) => setTask({ ...task, category: e.target.value })}
+                  displayEmpty
+                  variant="standard"
+                  sx={{ minWidth: "100px", marginRight: "8px" }} // ปรับขนาดและระยะห่าง
+                >
+                  {task_category_option.map((option) => (
+                    <MenuItem key={option} value={option}>
+                      {option}
+                    </MenuItem>
+                  ))}
+                </Select>
+                <IconButton
+                  onClick={addTask}
+                  sx={{
+                    backgroundColor: "green",
+                    color: "white",
+                    borderRadius: "50%",
+                    width: "40px",
+                    height: "40px",
+                    "&:hover": {
+                      backgroundColor: "darkgreen",
+                    },
+                  }}
+                >
+                  <Add />
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
         />
-        <Select
-          value={category}
-          onChange={(e) => setTask({ ...task, category: e.target.value })}
-          className="w-32"
-        >
-          {
-            task_category_option.map((option) => (
-              <MenuItem key={option} value={option}>
-                {option}
-              </MenuItem>
-            ))
-          }
-        </Select>
-        <Button variant="contained" color="primary" onClick={addTask}>
-          Add
-        </Button>
       </div>
+
       <div className="flex items-center gap-2 mb-4">
         <TextField
           label="Search"
@@ -248,61 +273,88 @@ const TodoListPage: React.FC = () => {
               fetchTasks();
             }
           }}
-          className="w-64"
+          className="w-60"
+          size="small"
+          sx={{
+            "& .MuiOutlinedInput-root": {
+              borderRadius: "999px",
+              fontSize: "14px",
+            },
+          }}
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
-                <IconButton onClick={fetchTasks} color="primary">
+                <IconButton onClick={fetchTasks} sx={{ color: "#4F46E5" }}>
                   <Search />
                 </IconButton>
               </InputAdornment>
             ),
           }}
         />
+
         <Select
           value={filter_category}
           onChange={(e) => setFilterCategory(e.target.value)}
-          className="w-32"
+          displayEmpty
+          className="w-28"
+          sx={{
+            borderRadius: "999px",
+            height: "40px",
+            fontSize: "14px",
+            backgroundColor: "#F3F4F6",
+            "& .MuiSelect-select": {
+              padding: "8px 12px",
+            },
+          }}
         >
           <MenuItem value="All">All</MenuItem>
-          {
-            task_category_option.map((option) => (
-              <MenuItem key={option} value={option}>
-                {option}
-              </MenuItem>
-            ))
-          }
-        </Select>
-        <div className="flex gap-2">
-          <Button
-            className="bg-gray-200 p-2 rounded-md text-sm text-gray-700 flex items-center gap-1"
-            onClick={(event) => { setAnchorEl(event.currentTarget) }}
-            endIcon={<Sort />}
-          >
-            Sort
-          </Button>
-          <Menu
-            anchorEl={anchorEl}
-            open={Boolean(anchorEl)}
-            onClose={() => { setAnchorEl(null) }}
-          >
-            <MenuItem onClick={() => toggleSort("createdAt")}>
-              จัดเรียงตามวันที่
-              {sort_order.name === "createdAt" && (sort_order.order === "ASC" ? <ArrowUpward fontSize="small" /> : <ArrowDownward fontSize="small" />)}
+          {task_category_option.map((option) => (
+            <MenuItem key={option} value={option}>
+              {option}
             </MenuItem>
-          </Menu>
-        </div>
-        <Button
-          variant="outlined"
-          color="secondary"
-          onClick={clearFilters}
-          startIcon={<Clear />}
-          className="ml-2"
-        >
-          Clear
-        </Button>
-      </div>
+          ))}
+        </Select>
 
+        <IconButton
+          onClick={(event) => setAnchorEl(event.currentTarget)}
+          sx={{
+            backgroundColor: "#1E3A8A",
+            color: "white",
+            borderRadius: "50%",
+            width: "40px",
+            height: "40px",
+            "&:hover": { backgroundColor: "#1D4ED8" },
+          }}
+        >
+          <Sort fontSize="small" />
+        </IconButton>
+        <Menu
+          anchorEl={anchorEl}
+          open={Boolean(anchorEl)}
+          onClose={() => setAnchorEl(null)}
+        >
+          <MenuItem onClick={() => toggleSort("createdAt")}>
+            จัดเรียงตามวันที่
+            {sort_order.name === "createdAt" && (
+              sort_order.order === "ASC" ? <ArrowUpward fontSize="small" /> : <ArrowDownward fontSize="small" />
+            )}
+          </MenuItem>
+        </Menu>
+
+        <IconButton
+          onClick={clearFilters}
+          sx={{
+            backgroundColor: "#EF4444",
+            color: "white",
+            borderRadius: "50%",
+            width: "40px",
+            height: "40px",
+            "&:hover": { backgroundColor: "#DC2626" },
+          }}
+        >
+          <Clear fontSize="small" />
+        </IconButton>
+      </div>
       {
         loading == true ? (
           <div style={{ display: "flex", justifyContent: "center", margin: "20px 0" }}>
@@ -311,10 +363,9 @@ const TodoListPage: React.FC = () => {
         ) : incompleteTasks.length > 0 ? (
           <>
             {incompleteTasks.map((t, index) => (
-              <List className="w-full max-w-md bg-white rounded-lg shadow-md mb-4" key={index}>
+              <List className="w-full max-w-md bg-white " key={index}>
                 <ListItem
                   key={index}
-                  className="border-b last:border-b-0 border-gray-200"
                   secondaryAction={
                     <>
                       <IconButton edge="end" aria-label="edit" onClick={() => { handleEdit(t.task_id) }}>
@@ -327,49 +378,64 @@ const TodoListPage: React.FC = () => {
                   }
                 >
                   <Checkbox checked={t.completed} onChange={() => toggleTaskCompletion(t.task_id, true)} />
-                  <div style={{ textDecoration: t.completed ? "line-through" : "none" }}>
-                    {t.text}
-                    <div>
+                  <Box sx={{ mb: 2 }}>
+                    <Typography variant="body1">{t.text}</Typography>
+                    <Box >
                       <Typography variant="body2" color="textSecondary">
                         Category: {t.category}
                       </Typography>
                       <Typography variant="body2" color="textSecondary">
-                        Created: {formatDate(t.createdAt, 'dd/MM/yyyy HH:mm:ss')}
+                        Created: {formatDate(t.createdAt, "dd/MM/yyyy HH:mm:ss")}
                       </Typography>
-                    </div>
-                  </div>
+                    </Box>
+                  </Box>
                 </ListItem>
               </List>
             ))}
           </>
         ) : (
-          <Typography variant="body1" color="textSecondary" align="center">
-            No pending tasks
-          </Typography>
+          <Box display="flex" flexDirection="column" alignItems="center" mt={4}>
+            <AssignmentTurnedIn sx={{ fontSize: 48, color: "#9CA3AF" }} />
+            <Typography variant="h6" color="textSecondary" sx={{ fontWeight: "500", mt: 1 }}>
+              No pending tasks
+            </Typography>
+          </Box>
         )
       }
 
       {
         completedTasks.length > 0 && (
           <>
-            <div className="flex justify-between items-center mb-4">
-              <Typography variant="h6" className="font-bold">Completed Tasks</Typography>
+            <div className="flex justify-between items-center mb-4 mt-8">
+              <Typography variant="h6" className="font-bold text-gray-800">
+                ✅ Completed Tasks
+              </Typography>
+
               <Button
-                variant="text"
-                color="primary"
+                variant="contained"
                 onClick={() => setShowCompleted(!showCompleted)}
-                className="text-blue-500"
                 startIcon={showCompleted ? <VisibilityOff /> : <Visibility />}
+                size="small"
+                sx={{
+                  backgroundColor: showCompleted ? "#f87171" : "#3b82f6",
+                  color: "white",
+                  "&:hover": {
+                    backgroundColor: showCompleted ? "#dc2626" : "#2563eb",
+                  },
+                  paddingX: "12px",
+                  borderRadius: "10px",
+                  textTransform: "none",
+                  marginLeft: "10px",
+                }}
               >
                 {showCompleted ? "Hide" : "Show"}
               </Button>
             </div>
-            <Collapse in={showCompleted} className="w-full max-w-md bg-white rounded-lg shadow-md" >
+            <Collapse in={showCompleted} className="w-full max-w-md bg-white  " >
               <List >
                 {completedTasks.map((t, index) => (
                   <ListItem
                     key={index}
-                    className="border-b last:border-b-0 border-gray-200"
                     secondaryAction={
                       <>
                         <IconButton edge="end" aria-label="delete" onClick={() => deleteTask(t.task_id)}>
@@ -382,20 +448,20 @@ const TodoListPage: React.FC = () => {
                       checked={t.completed}
                       onChange={() => toggleTaskCompletion(t.task_id, false)}
                     />
-                    <div style={{ textDecoration: t.completed ? "line-through" : "none" }}>
-                      {t.text}
-                      <div>
+                    <Box sx={{ textDecoration: t.completed ? "line-through" : "none", mb: 2 }}>
+                      <Typography variant="body1">{t.text}</Typography>
+                      <Box sx={{ pl: 2 }}>
                         <Typography variant="body2" color="textSecondary">
                           Category: {t.category}
                         </Typography>
                         <Typography variant="body2" color="textSecondary">
-                          Created: {formatDate(t.createdAt, 'dd/MM/yyyy HH:mm:ss')}
+                          Created: {formatDate(t.createdAt, "dd/MM/yyyy HH:mm:ss")}
                         </Typography>
                         <Typography variant="body2" color="textSecondary">
-                          Completed: {formatDate(t.completedAt, 'dd/MM/yyyy HH:mm:ss')}
+                          Completed: {t.completedAt ? formatDate(t.completedAt, "dd/MM/yyyy HH:mm:ss") : "Not completed"}
                         </Typography>
-                      </div>
-                    </div>
+                      </Box>
+                    </Box>
                   </ListItem>
                 ))}
               </List>
