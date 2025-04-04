@@ -9,9 +9,9 @@ import { generateID } from "@/utils/generator-id"
 import { Task } from "@/misc/types";
 import { useTask } from "@/hook/hooks";
 import UpdateTask from "@/app/components/Task/Update";
-const { getTaskBy, insertTask, updateTaskBy, deleteTaskBy } = useTask();
 
 const TodoListPage: React.FC = () => {
+  const { getTaskBy, insertTask, updateTaskBy, deleteTaskBy } = useTask();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   const [loading, setLoading] = useState<boolean>(true);
@@ -36,23 +36,9 @@ const TodoListPage: React.FC = () => {
   });
   const [filter_category, setFilterCategory] = useState<string>("All");
 
-  const [task_category_option, setTaskCategoryOption] = useState<string[]>(
+  const [task_category_option] = useState<string[]>(
     ["General", "Work", "Personal"]
   );
-
-  useEffect(() => {
-    try {
-      fetchTasks();
-    } catch (error) {
-      console.error("Error fetching tasks:", error);
-    } finally {
-      setLoading(false)
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchTasks();
-  }, [filter_category, sort_order]);
 
   const fetchTasks = async () => {
     try {
@@ -80,6 +66,20 @@ const TodoListPage: React.FC = () => {
       console.error("Error fetching tasks:", error);
     }
   };
+
+  useEffect(() => {
+    try {
+      fetchTasks();
+    } catch (error) {
+      console.error("Error fetching tasks:", error);
+    } finally {
+      setLoading(false)
+    }
+  }, [fetchTasks]);
+
+  useEffect(() => {
+    fetchTasks();
+  }, [filter_category, sort_order]);
 
   const addTask = async () => {
     if (!task.text.trim()) {

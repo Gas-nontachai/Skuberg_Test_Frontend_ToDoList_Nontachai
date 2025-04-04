@@ -30,6 +30,6 @@ export const getStore = (): IDBObjectStore => {
     return db.transaction(storeName, 'readwrite').objectStore(storeName);
 };
 export const getDBStore = async (): Promise<IDBObjectStore> => {
-    const db = await openDB();
+    await openDB();
     return getStore();
 };

@@ -15,9 +15,6 @@ import {
 } from "@mui/material";
 import { Task } from "@/misc/types";
 import { useTask } from "@/hook/hooks";
-
-const { getTaskByID, updateTaskBy } = useTask();
-
 interface UpdateTaskProps {
     onClose: () => void;
     onRefresh: () => void;
@@ -26,6 +23,7 @@ interface UpdateTaskProps {
 }
 
 const UpdateTask: React.FC<UpdateTaskProps> = ({ onClose, open, onRefresh, task_id }) => {
+    const { getTaskByID, updateTaskBy } = useTask();
     const [task, setTask] = useState<Task>({
         task_id: "",
         text: "",
