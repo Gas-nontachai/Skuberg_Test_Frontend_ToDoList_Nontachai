@@ -207,7 +207,7 @@ const TodoListPage: React.FC = () => {
 
   return (
     <div className="flex flex-col items-center p-4 bg-gray-100 min-h-screen">
-      <h1 className="text-2xl font-bold mb-4">To-Do List</h1>
+      <h1 className="text-2xl font-bold mb-4 text-gray-800">To-Do List</h1>
       <div className="flex items-center gap-2 mb-4">
         <TextField
           label="New Task"
@@ -446,7 +446,13 @@ const TodoListPage: React.FC = () => {
                       checked={t.completed}
                       onChange={() => toggleTaskCompletion(t.task_id, false)}
                     />
-                    <Box sx={{ textDecoration: t.completed ? "line-through" : "none", mb: 2 }}>
+                    <Box
+                      sx={{
+                        textDecoration: t.completed ? "line-through" : "none",
+                        textDecorationColor: t.completed ? "#1f2937" : "inherit",
+                        mb: 2
+                      }}
+                    >
                       <Typography variant="h6" className="font-bold text-gray-800" >
                         {t.text}
                       </Typography>
@@ -458,7 +464,7 @@ const TodoListPage: React.FC = () => {
                           Created: {formatDate(t.createdAt, "dd/MM/yyyy HH:mm:ss")}
                         </Typography>
                         <Typography variant="body2" className="text-gray-600" >
-                          Completed: {t.completedAt ? formatDate(t.completedAt, "dd/MM/yyyy HH:mm:ss") : "Not completed"}
+                          Completed: {t.completedAt && formatDate(t.completedAt, "dd/MM/yyyy HH:mm:ss")}
                         </Typography>
                       </Box>
                     </Box>
