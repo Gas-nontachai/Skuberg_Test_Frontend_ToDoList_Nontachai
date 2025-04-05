@@ -451,13 +451,13 @@ const TodoListPage: React.FC = () => {
                         {t.text}
                       </Typography>
                       <Box sx={{ pl: 2 }}>
-                        <Typography variant="body2" color="textSecondary">
+                        <Typography variant="body2" className="text-gray-600" >
                           Category: {t.category}
                         </Typography>
-                        <Typography variant="body2" color="textSecondary">
+                        <Typography variant="body2" className="text-gray-600" >
                           Created: {formatDate(t.createdAt, "dd/MM/yyyy HH:mm:ss")}
                         </Typography>
-                        <Typography variant="body2" color="textSecondary">
+                        <Typography variant="body2" className="text-gray-600" >
                           Completed: {t.completedAt ? formatDate(t.completedAt, "dd/MM/yyyy HH:mm:ss") : "Not completed"}
                         </Typography>
                       </Box>
