@@ -375,7 +375,7 @@ const TodoListPage: React.FC = () => {
                 >
                   <Checkbox checked={t.completed} onChange={() => toggleTaskCompletion(t.task_id, true)} />
                   <Box sx={{ mb: 2 }}>
-                    <Typography variant="h6" color="textDark"  >
+                    <Typography variant="h6" className="font-bold text-gray-800">
                       {t.text}
                     </Typography>
                     <Box >
@@ -447,7 +447,7 @@ const TodoListPage: React.FC = () => {
                       onChange={() => toggleTaskCompletion(t.task_id, false)}
                     />
                     <Box sx={{ textDecoration: t.completed ? "line-through" : "none", mb: 2 }}>
-                      <Typography variant="h6" color="textDark"  >
+                      <Typography variant="h6" className="font-bold text-gray-800" >
                         {t.text}
                       </Typography>
                       <Box sx={{ pl: 2 }}>
