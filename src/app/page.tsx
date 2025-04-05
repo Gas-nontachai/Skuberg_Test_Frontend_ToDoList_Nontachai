@@ -330,7 +330,7 @@ const TodoListPage: React.FC = () => {
           onClose={() => setAnchorEl(null)}
         >
           <MenuItem onClick={() => toggleSort("createdAt")}>
-            จัดเรียงตามวันที่
+            Sort by Date
             {sort_order.name === "createdAt" && (
               sort_order.order === "ASC" ? <ArrowUpward fontSize="small" /> : <ArrowDownward fontSize="small" />
             )}
@@ -375,7 +375,9 @@ const TodoListPage: React.FC = () => {
                 >
                   <Checkbox checked={t.completed} onChange={() => toggleTaskCompletion(t.task_id, true)} />
                   <Box sx={{ mb: 2 }}>
-                    <Typography variant="body1">{t.text}</Typography>
+                    <Typography variant="h6" color="textDark"  >
+                      {t.text}
+                    </Typography>
                     <Box >
                       <Typography variant="body2" color="textSecondary">
                         Category: {t.category}
@@ -445,7 +447,9 @@ const TodoListPage: React.FC = () => {
                       onChange={() => toggleTaskCompletion(t.task_id, false)}
                     />
                     <Box sx={{ textDecoration: t.completed ? "line-through" : "none", mb: 2 }}>
-                      <Typography variant="body1">{t.text}</Typography>
+                      <Typography variant="h6" color="textDark"  >
+                        {t.text}
+                      </Typography>
                       <Box sx={{ pl: 2 }}>
                         <Typography variant="body2" color="textSecondary">
                           Category: {t.category}
